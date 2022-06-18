@@ -1,3 +1,3 @@
 # stay
 
-backend of a website for renting accomodations
+backend of a website for renting accommodation
