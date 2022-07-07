@@ -5,6 +5,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+// be used by Spring Security for user authorization
+
 @Entity
 @Table(name = "authority")
 public class Authority implements Serializable {
@@ -39,4 +41,6 @@ public class Authority implements Serializable {
         return this;
     }
 }
+
+
 

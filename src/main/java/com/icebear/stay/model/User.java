@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "user")
 @JsonDeserialize(builder = User.Builder.class)
-// Jackson will use User.Builder when constructing a Game object from JSON strings
+// Jackson will use User.Builder when constructing a User object from JSON strings
 // in the process of deserializing
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
