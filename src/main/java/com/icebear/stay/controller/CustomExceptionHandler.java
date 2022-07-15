@@ -1,5 +1,6 @@
 package com.icebear.stay.controller;
 
+import com.icebear.stay.exception.StayNotExistException;
 import com.icebear.stay.exception.UserAlreadyExistException;
 import com.icebear.stay.exception.UserNotExistException;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,10 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(StayNotExistException.class)
+    public final ResponseEntity<String> handleStayNotExistExceptions(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
 
 
