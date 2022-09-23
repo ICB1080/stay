@@ -61,6 +61,13 @@
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.maps</groupId>
+            <artifactId>google-maps-services</artifactId>
+            <version>0.18.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
