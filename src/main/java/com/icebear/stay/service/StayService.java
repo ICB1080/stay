@@ -1,9 +1,11 @@
 package com.icebear.stay.service;
 
 import com.icebear.stay.exception.StayNotExistException;
+import com.icebear.stay.model.Location;
 import com.icebear.stay.model.Stay;
 import com.icebear.stay.model.StayImage;
 import com.icebear.stay.model.User;
+import com.icebear.stay.repository.LocationRepository;
 import com.icebear.stay.repository.StayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,21 @@ public class StayService {
     private StayRepository stayRepository;
     private ImageStorageService imageStorageService;
 
+    private LocationRepository locationRepository;
+    private GeoCodingService geoCodingService;
+
+
 
     @Autowired
-    public StayService(StayRepository stayRepository, ImageStorageService imageStorageService) {
+    public StayService(StayRepository stayRepository,
+                       ImageStorageService imageStorageService,
+                       LocationRepository locationRepository,
+                       GeoCodingService geoCodingService) {
         this.stayRepository = stayRepository;
         this.imageStorageService = imageStorageService;
+        this.locationRepository = locationRepository;
+        this.geoCodingService = geoCodingService;
     }
-
 
     public List<Stay> listByUser(String username) {
 
@@ -46,16 +56,19 @@ public class StayService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void add(Stay stay, MultipartFile[] images ) {
+        // add images to google cloud storage
         List<String> mediaLinks = Arrays.stream(images).parallel().map(
                 image -> imageStorageService.save(image)).collect(Collectors.toList());
         List<StayImage> stayImages = new ArrayList<>();
         for (String mediaLink : mediaLinks) {
             stayImages.add(new StayImage(mediaLink, stay));
         }
+        // store stay in database
         stay.setImages(stayImages);
-
         stayRepository.save(stay);
-
+        // store (id, geoPoint) into elastic search
+        Location location = geoCodingService.getLatLng(stay.getId(), stay.getAddress());
+        locationRepository.save(location);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
