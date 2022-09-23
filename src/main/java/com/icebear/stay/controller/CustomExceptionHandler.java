@@ -1,9 +1,6 @@
 package com.icebear.stay.controller;
 
-import com.icebear.stay.exception.GCSUploadException;
-import com.icebear.stay.exception.StayNotExistException;
-import com.icebear.stay.exception.UserAlreadyExistException;
-import com.icebear.stay.exception.UserNotExistException;
+import com.icebear.stay.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +31,12 @@ public class CustomExceptionHandler {
     public final ResponseEntity<String> handleGCSUploadExceptions(Exception ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(InvalidSearchDateException.class)
+    public final ResponseEntity<String> handleInvalidSearchDateExceptions(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 
 }
 

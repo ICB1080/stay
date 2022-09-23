@@ -18,5 +18,7 @@ public interface StayRepository extends JpaRepository<Stay, Long> {
     Stay findByIdAndHost(Long id, User host);
 
 
+    // find all stays which can contain guest number >= guestNumber
+    List<Stay> findByIdInAndGuestNumberGreaterThanEqual(List<Long> ids, int guestNumber);
 
 }

@@ -20,7 +20,7 @@ public class StayReservedDate implements Serializable {
     private StayReservedDateKey id;
 
     // @MapsId: provides mapping for an attribute within an EmbeddedId primary key
-    // value("") specifies the attribute within a composite key.
+    // value("xxx") specifies the attribute within a composite key.
     // let Stay and StayReservedDate share the same primary key: stay_id
     @MapsId("stay_id")
     @ManyToOne
@@ -42,5 +42,4 @@ public class StayReservedDate implements Serializable {
     }
     // no setter for StayReservedDate
     // id and stay will get from database
-
 }
