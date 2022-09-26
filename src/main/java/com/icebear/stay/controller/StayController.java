@@ -1,7 +1,9 @@
 package com.icebear.stay.controller;
 
+import com.icebear.stay.model.Reservation;
 import com.icebear.stay.model.Stay;
 import com.icebear.stay.model.User;
+import com.icebear.stay.service.ReservationService;
 import com.icebear.stay.service.StayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +15,23 @@ import java.util.List;
 @RestController
 public class StayController {
     private StayService stayService;
+    private ReservationService reservationService;
 
     @Autowired
-    public StayController(StayService stayService) {
+    public StayController(StayService stayService,
+                          ReservationService reservationService) {
         this.stayService = stayService;
+        this.reservationService = reservationService;
     }
+
+    @GetMapping(value = "/stays/reservations/{stayId}")
+    public List<Reservation> listReservations(@PathVariable Long stayId) {
+
+
+        return reservationService.listByStay(stayId);
+    }
+
+
 
     // principal:
     @GetMapping(value = "/stays")

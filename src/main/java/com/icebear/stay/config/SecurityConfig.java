@@ -49,6 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/stays").hasAuthority("ROLE_HOST")
                 // only host can send request of /stays/xxx
                 .antMatchers("/stays/*").hasAuthority("ROLE_HOST")
+                // only guest can search stays
+                .antMatchers("/search").hasAuthority("ROLE_GUEST")
+
+                .antMatchers("/reservations").hasAuthority("ROLE_GUEST")
+                .antMatchers("/reservations/*").hasAuthority("ROLE_GUEST")
 
                 // visit after authentication
                 .anyRequest().authenticated()

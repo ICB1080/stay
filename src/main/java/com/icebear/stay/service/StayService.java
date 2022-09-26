@@ -1,18 +1,19 @@
 package com.icebear.stay.service;
 
+import com.icebear.stay.exception.StayDeleteException;
 import com.icebear.stay.exception.StayNotExistException;
-import com.icebear.stay.model.Location;
-import com.icebear.stay.model.Stay;
-import com.icebear.stay.model.StayImage;
-import com.icebear.stay.model.User;
+import com.icebear.stay.model.*;
 import com.icebear.stay.repository.LocationRepository;
+import com.icebear.stay.repository.ReservationRepository;
 import com.icebear.stay.repository.StayRepository;
+import com.icebear.stay.repository.StayReservationDateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,17 +28,25 @@ public class StayService {
     private LocationRepository locationRepository;
     private GeoCodingService geoCodingService;
 
+    private ReservationRepository reservationRepository;
+    private StayReservationDateRepository stayReservationDateRepository;
+
 
 
     @Autowired
     public StayService(StayRepository stayRepository,
                        ImageStorageService imageStorageService,
                        LocationRepository locationRepository,
-                       GeoCodingService geoCodingService) {
+                       GeoCodingService geoCodingService,
+                       ReservationRepository reservationRepository,
+                       StayReservationDateRepository stayReservationDateRepository
+                       ) {
         this.stayRepository = stayRepository;
         this.imageStorageService = imageStorageService;
         this.locationRepository = locationRepository;
         this.geoCodingService = geoCodingService;
+        this.reservationRepository = reservationRepository;
+        this.stayReservationDateRepository = stayReservationDateRepository;
     }
 
     public List<Stay> listByUser(String username) {
@@ -77,8 +86,24 @@ public class StayService {
         if (stay == null) {
             throw new StayNotExistException("Stay doesn't exist");
         }
+
+        // If the to-be-deleted stay still have reservation from current time
+        // we cannot delete the stay right now
+        List<Reservation> reservations = reservationRepository.findByStayAndCheckoutDateAfter(stay, LocalDate.now());
+        if (reservations != null && reservations.size() > 0) {
+            throw new StayDeleteException("Cannot delete stay with active reservation");
+        }
+
+
+        // delete all this stay related data in stayReservedDates
+        List<StayReservedDate> stayReservedDates = stayReservationDateRepository.findByStay(stay);
+
+        for(StayReservedDate date : stayReservedDates) {
+            stayReservationDateRepository.deleteById(date.getId());
+        }
+
         stayRepository.deleteById(stayId);
-        // temporarily do not delete StayReservedDate
+
     }
 }
 

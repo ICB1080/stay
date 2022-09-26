@@ -1,6 +1,7 @@
 package com.icebear.stay.repository;
 
 
+import com.icebear.stay.model.Stay;
 import com.icebear.stay.model.StayReservedDate;
 import com.icebear.stay.model.StayReservedDateKey;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,5 +20,7 @@ public interface StayReservationDateRepository extends JpaRepository<StayReserve
             "WHERE srd.id.stay_id IN ?1 AND srd.id.date BETWEEN ?2 AND ?3 GROUP BY srd.id.stay_id")
     // find stayIds that has already been reserved between startDate and endDate
     Set<Long> findByIdInAndDateBetween(List<Long> stayIds, LocalDate startDate, LocalDate endDate);
+
+    List<StayReservedDate> findByStay(Stay stay);
 }
 
