@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 // antMatchers: HttpSecurity will only be invoked when matching the provided ant pattern
-                // permitAll(): all requests are allowed on that particular path.
+                // permitAll(): all requests can successfully be sent to that particular path without token
                 .antMatchers(HttpMethod.POST, "/register/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/authenticate/*").permitAll()
                 // only host can send request of /stays/

@@ -26,8 +26,6 @@ public class StayController {
 
     @GetMapping(value = "/stays/reservations/{stayId}")
     public List<Reservation> listReservations(@PathVariable Long stayId) {
-
-
         return reservationService.listByStay(stayId);
     }
 

@@ -21,16 +21,13 @@ import java.util.Set;
 public class ReservationService {
     private ReservationRepository reservationRepository;
     private StayReservationDateRepository stayReservationDateRepository;
-    private StayRepository stayRepository;
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository,
-                              StayReservationDateRepository stayReservationDateRepository,
-                              StayRepository stayRepository
+                              StayReservationDateRepository stayReservationDateRepository
                               ) {
         this.reservationRepository = reservationRepository;
         this.stayReservationDateRepository = stayReservationDateRepository;
-        this.stayRepository = stayRepository;
     }
 
     public List<Reservation> listByGuest(String username) {
@@ -38,7 +35,6 @@ public class ReservationService {
     }
 
     public List<Reservation> listByStay(Long stayId) {
-
         return reservationRepository.findByStay(new Stay.Builder().setId(stayId).build());
     }
 

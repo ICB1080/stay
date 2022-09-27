@@ -23,6 +23,7 @@ import java.util.List;
 // validate token,
 // find username in token
 // and find corresponding authority of this user in database
+// OncePerRequestFilter: Every request will get through this filter
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     // OncePerRequestFilter only perform once
