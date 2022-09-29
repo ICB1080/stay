@@ -22,18 +22,32 @@ public class GeoCodingService {
         this.context = context;
     }
 
-    // convert address to (lat, lon) and return a Location object
-    public Location getLatLng(Long id, String address) throws GeoCodingException {
+    public GeocodingResult getLatLng(String address) throws GeoCodingException {
         try {
             GeocodingResult result = GeocodingApi.geocode(context, address).await()[0];
-            if (result.partialMatch) {
-                throw new InvalidStayAddressException("Failed to find stay address");
+            if (result.partialMatch){
+                throw new InvalidStayAddressException("The address is invalid");
             }
-            return new Location(id,
-                    new GeoPoint(result.geometry.location.lat, result.geometry.location.lng));
-        } catch (IOException | ApiException | InterruptedException e) {
+            return result;
+        }catch(IOException | ApiException | InterruptedException e){
             e.printStackTrace();
-            throw new GeoCodingException("Failed to encode stay address");
+            throw new GeoCodingException("Failed to encode this address");
         }
     }
+
+
+    // convert address to (lat, lon) and return a Location object
+//    public Location getLocation(Long id, String address) throws GeoCodingException {
+//        try {
+//            GeocodingResult result = GeocodingApi.geocode(context, address).await()[0];
+//            if (result.partialMatch) {
+//                throw new InvalidStayAddressException("Failed to find stay address");
+//            }
+//            return new Location(id,
+//                    new GeoPoint(result.geometry.location.lat, result.geometry.location.lng));
+//        } catch (IOException | ApiException | InterruptedException e) {
+//            e.printStackTrace();
+//            throw new GeoCodingException("Failed to encode stay address");
+//        }
+//    }
 }

@@ -1,5 +1,6 @@
 package com.icebear.stay.service;
 
+import com.google.maps.model.GeocodingResult;
 import com.icebear.stay.exception.StayDeleteException;
 import com.icebear.stay.exception.StayNotExistException;
 import com.icebear.stay.model.*;
@@ -8,6 +9,7 @@ import com.icebear.stay.repository.ReservationRepository;
 import com.icebear.stay.repository.StayRepository;
 import com.icebear.stay.repository.StayReservationDateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +78,11 @@ public class StayService {
         stay.setImages(stayImages);
         stayRepository.save(stay);
         // store (id, geoPoint) into elastic search
-        Location location = geoCodingService.getLatLng(stay.getId(), stay.getAddress());
+        GeocodingResult result = geoCodingService.getLatLng(stay.getAddress());
+        double lat = result.geometry.location.lat;
+        double lon = result.geometry.location.lng;
+        Location location = new Location(stay.getId(), new GeoPoint(lat, lon));
+//        Location location = geoCodingService.getLocation(stay.getId(), stay.getAddress());
         locationRepository.save(location);
     }
 
